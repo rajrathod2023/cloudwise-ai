@@ -26,12 +26,46 @@ class RecommendedService(BaseModel):
     implementation_role: str = Field(min_length=2, max_length=300)
 
 
+class ArchitectureComponent(BaseModel):
+    component_name: str = Field(min_length=2, max_length=100)
+    aws_service: str = Field(min_length=2, max_length=100)
+    responsibility: str = Field(min_length=5, max_length=500)
+
+
+class ImplementationPhase(BaseModel):
+    phase_number: int = Field(ge=1, le=10)
+    title: str = Field(min_length=2, max_length=100)
+    description: str = Field(min_length=5, max_length=1000)
+
+
+class ResponsibleAI(BaseModel):
+    risks: list[str]
+    mitigations: list[str]
+    human_review_required: bool
+    explanation: str = Field(min_length=10, max_length=1000)
+
+
+class SecurityAssessment(BaseModel):
+    iam_controls: list[str]
+    encryption_controls: list[str]
+    logging_controls: list[str]
+    data_protection_notes: str = Field(min_length=10, max_length=1000)
+
+
 class AssessmentResponse(BaseModel):
     assessment_id: str
     status: Literal["completed"]
     problem_summary: str = Field(min_length=10, max_length=2000)
     use_case_category: str = Field(min_length=2, max_length=200)
+
     recommended_services: list[RecommendedService]
+    architecture: list[ArchitectureComponent]
+    implementation_phases: list[ImplementationPhase]
+
+    responsible_ai: ResponsibleAI
+    security: SecurityAssessment
+
     complexity: Literal["low", "medium", "high"]
     cost_level: Literal["low", "medium", "high"]
+
     disclaimer: str = Field(min_length=10, max_length=1000)
