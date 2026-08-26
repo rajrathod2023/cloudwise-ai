@@ -1,5 +1,21 @@
 from app.schemas.assessment import AssessmentRequest, AssessmentResponse
 
+def select_primary_service(
+    business_challenge: str,
+    input_data_type: str,
+) -> str:
+    text = f"{business_challenge} {input_data_type}".lower()
+
+    if "sentiment" in text or "customer review" in text:
+        return "Amazon Comprehend"
+
+    if "invoice" in text or "extract fields" in text or "tables" in text:
+        return "Amazon Textract"
+
+    if "generative ai" in text or "assistant" in text:
+        return "Amazon Bedrock"
+
+    return "Amazon Bedrock"
 
 def build_mock_recommendation(
     request: AssessmentRequest,
