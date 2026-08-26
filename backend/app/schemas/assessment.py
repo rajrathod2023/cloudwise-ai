@@ -15,8 +15,14 @@ class AssessmentRequest(BaseModel):
     expected_usage: Literal["low", "medium", "high"]
     budget_level: Literal["low", "medium", "high"]
 
-    compliance_requirements: str | None = Field(default=None, max_length=500)
-    additional_context: str | None = Field(default=None, max_length=2000)
+    compliance_requirements: str | None = Field(
+        default=None,
+        max_length=500,
+    )
+    additional_context: str | None = Field(
+        default=None,
+        max_length=2000,
+    )
 
 
 class RecommendedService(BaseModel):
@@ -49,14 +55,33 @@ class SecurityAssessment(BaseModel):
     iam_controls: list[str]
     encryption_controls: list[str]
     logging_controls: list[str]
-    data_protection_notes: str = Field(min_length=10, max_length=1000)
+    data_protection_notes: str = Field(
+        min_length=10,
+        max_length=1000,
+    )
+
+
+class PrivacyComplianceAssessment(BaseModel):
+    privacy_considerations: list[str]
+    compliance_considerations: list[str]
+    data_retention_notes: str = Field(
+        min_length=10,
+        max_length=1000,
+    )
 
 
 class AssessmentResponse(BaseModel):
     assessment_id: str
     status: Literal["completed"]
-    problem_summary: str = Field(min_length=10, max_length=2000)
-    use_case_category: str = Field(min_length=2, max_length=200)
+
+    problem_summary: str = Field(
+        min_length=10,
+        max_length=2000,
+    )
+    use_case_category: str = Field(
+        min_length=2,
+        max_length=200,
+    )
 
     recommended_services: list[RecommendedService]
     architecture: list[ArchitectureComponent]
@@ -64,8 +89,15 @@ class AssessmentResponse(BaseModel):
 
     responsible_ai: ResponsibleAI
     security: SecurityAssessment
+    privacy_and_compliance: PrivacyComplianceAssessment
+
+    limitations: list[str]
+    alternatives_considered: list[str]
 
     complexity: Literal["low", "medium", "high"]
     cost_level: Literal["low", "medium", "high"]
 
-    disclaimer: str = Field(min_length=10, max_length=1000)
+    disclaimer: str = Field(
+        min_length=10,
+        max_length=1000,
+    )
