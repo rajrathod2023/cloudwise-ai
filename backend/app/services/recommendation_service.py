@@ -1,5 +1,6 @@
 from app.schemas.assessment import AssessmentRequest, AssessmentResponse
 
+
 def select_primary_service(
     business_challenge: str,
     input_data_type: str,
@@ -17,9 +18,15 @@ def select_primary_service(
 
     return "Amazon Bedrock"
 
+
 def build_mock_recommendation(
     request: AssessmentRequest,
 ) -> AssessmentResponse:
+    primary_service = select_primary_service(
+        business_challenge=request.business_challenge,
+        input_data_type=request.input_data_type,
+    )
+
     return AssessmentResponse(
         assessment_id="demo-assessment-001",
         status="completed",
@@ -27,12 +34,12 @@ def build_mock_recommendation(
         use_case_category="mock-ai-assessment",
         recommended_services=[
             {
-                "service_name": "Amazon Bedrock",
-                "purpose": "Generate a structured AWS AI recommendation.",
+                "service_name": primary_service,
+                "purpose": "Provide the primary AI capability for the use case.",
                 "reason_selected": (
-                    "Used as the planned generative AI layer for CloudWise AI."
+                    "Selected based on the business challenge and input data type."
                 ),
-                "implementation_role": "AI recommendation engine",
+                "implementation_role": "Primary AI service",
             }
         ],
         architecture=[
@@ -53,9 +60,10 @@ def build_mock_recommendation(
             },
             {
                 "component_name": "AI Recommendation",
-                "aws_service": "Amazon Bedrock",
+                "aws_service": primary_service,
                 "responsibility": (
-                    "Generate structured AWS AI solution recommendations."
+                    "Provide the primary AI capability selected for the "
+                    "business use case."
                 ),
             },
         ],
@@ -70,17 +78,17 @@ def build_mock_recommendation(
             },
             {
                 "phase_number": 2,
-                "title": "Bedrock Integration",
+                "title": "AWS AI Integration",
                 "description": (
-                    "Connect Amazon Bedrock and validate structured "
-                    "model responses."
+                    "Connect the selected AWS AI service and validate "
+                    "structured application responses."
                 ),
             },
         ],
         responsible_ai={
             "risks": [
                 "AI recommendations may contain inaccurate or incomplete information.",
-                "Generated recommendations may reflect model bias.",
+                "Generated recommendations may reflect model or data bias.",
             ],
             "mitigations": [
                 "Require human review before implementation.",
@@ -116,7 +124,7 @@ def build_mock_recommendation(
             "privacy_considerations": [
                 "Collect only the minimum data required for the assessment.",
                 "Avoid including unnecessary personal or sensitive information "
-                "in prompts.",
+                "in AI requests.",
             ],
             "compliance_considerations": [
                 "Review applicable industry and organisational compliance "
@@ -130,21 +138,21 @@ def build_mock_recommendation(
             ),
         },
         limitations=[
-            "The recommendation is generated from a mocked development response.",
+            "The recommendation currently uses rule-based service selection.",
             "The proposed architecture must be validated against current AWS "
             "service capabilities.",
             "Cost estimates are indicative and depend on actual usage patterns.",
         ],
         alternatives_considered=[
-            "Use a specialised AWS AI service instead of generative AI where "
-            "appropriate.",
+            "Use another specialised AWS AI service when it better matches "
+            "the business requirement.",
             "Use a simpler non-AI workflow when AI does not provide sufficient "
             "business value.",
         ],
         complexity="medium",
         cost_level="low",
         disclaimer=(
-            "This is a mocked recommendation for development and testing. "
-            "It must be reviewed before implementation."
+            "This is a development recommendation and must be reviewed "
+            "before implementation."
         ),
     )

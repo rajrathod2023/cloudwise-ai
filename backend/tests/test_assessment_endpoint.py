@@ -36,7 +36,7 @@ def test_create_assessment():
     assert data["status"] == "completed"
     assert data["problem_summary"] == payload["business_challenge"]
     assert data["use_case_category"] == "mock-ai-assessment"
-    assert data["recommended_services"][0]["service_name"] == "Amazon Bedrock"
+    assert data["recommended_services"][0]["service_name"] == "Amazon Comprehend"
 
 
 def test_create_assessment_rejects_invalid_processing_type():
@@ -57,3 +57,31 @@ def test_create_assessment_rejects_invalid_processing_type():
     response = client.post("/api/v1/assessments", json=payload)
 
     assert response.status_code == 422
+
+
+def test_create_assessment_selects_textract_for_invoice_extraction():
+    payload = {
+        "industry": "Finance",
+        "business_challenge": "Extract fields and tables from supplier invoices.",
+        "input_data_type": "Scanned invoices",
+        "desired_output": "Structured invoice data",
+        "intended_users": "Accounts payable team",
+        "processing_type": "batch",
+        "data_sensitivity": "medium",
+        "expected_usage": "medium",
+        "budget_level": "medium",
+        "compliance_requirements": (
+            "Financial documents must be handled securely."
+        ),
+        "additional_context": (
+            "The extracted data will be reviewed before downstream processing."
+        ),
+    }
+
+    response = client.post("/api/v1/assessments", json=payload)
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["recommended_services"][0]["service_name"] == "Amazon Textract"
