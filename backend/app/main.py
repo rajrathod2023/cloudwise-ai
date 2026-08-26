@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.schemas.assessment import AssessmentRequest
+from app.schemas.assessment import AssessmentRequest, AssessmentResponse
 
 
 app = FastAPI(
@@ -19,7 +19,10 @@ def health_check():
     }
 
 
-@app.post("/api/v1/assessments")
+@app.post(
+    "/api/v1/assessments",
+    response_model=AssessmentResponse,
+)
 def create_assessment(request: AssessmentRequest):
     return {
         "assessment_id": "demo-assessment-001",
