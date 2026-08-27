@@ -62,3 +62,23 @@ def test_selects_sagemaker_for_custom_ml_model_training_and_deployment():
     )
 
     assert service == "Amazon SageMaker"
+
+
+def test_does_not_match_textract_keyword_inside_unrelated_word():
+    service = select_primary_service(
+        business_challenge=(
+            "Improve vegetable inventory forecasting for our stores."
+        ),
+        input_data_type="Vegetables sales records",
+    )
+
+    assert service == "Amazon Bedrock"
+
+
+def test_selects_textract_for_tables_with_normal_punctuation():
+    service = select_primary_service(
+        business_challenge="Extract tables, from supplier invoices.",
+        input_data_type="PDF documents",
+    )
+
+    assert service == "Amazon Textract"

@@ -1,3 +1,4 @@
+import re
 from typing import Literal
 
 from app.schemas.assessment import AssessmentRequest, AssessmentResponse
@@ -193,17 +194,71 @@ SERVICE_METADATA = {
 }
 
 
+FALLBACK_METADATA = {
+    "purpose": (
+        "Explore whether foundation-model capabilities could support the use case "
+        "when no specialised AWS AI service rule matches."
+    ),
+    "reason_selected": (
+        "No specialised service rule matched the supplied requirement. Amazon "
+        "Bedrock is presented only as an exploratory starting point that requires "
+        "human validation."
+    ),
+    "implementation_role": (
+        "Support a time-boxed exploration after human validation of the requirements "
+        "and non-AI options."
+    ),
+    "architecture_component_name": "Exploratory Generative AI Option",
+    "architecture_responsibility": (
+        "Explore foundation-model capabilities only if refined requirements justify "
+        "a generative AI approach."
+    ),
+    "integration_phase_title": "Requirements Validation and Bedrock Exploration",
+    "integration_phase_description": (
+        "Refine the requirements, compare conventional automation and specialised "
+        "services, then evaluate Amazon Bedrock only if generative AI is justified."
+    ),
+    "limitations": [
+        "No specialised service rule matched, and more detailed requirements may "
+        "change the recommended AWS service.",
+        "The fallback does not establish that generative AI is required.",
+    ],
+    "alternatives": [
+        "Use conventional automation or a non-AI workflow when it better fits the "
+        "validated requirement.",
+        "Gather more detailed requirements and reassess the specialised AWS AI "
+        "service options.",
+    ],
+}
+
+
+def keyword_matches(text: str, keyword: str) -> bool:
+    pattern = rf"(?<!\w){re.escape(keyword)}(?!\w)"
+    return re.search(pattern, text, flags=re.IGNORECASE) is not None
+
+
+def select_primary_service_with_match(
+    business_challenge: str,
+    input_data_type: str,
+) -> tuple[str, bool]:
+    text = f"{business_challenge} {input_data_type}"
+
+    for service_name, keywords in SERVICE_SELECTION_RULES:
+        if any(keyword_matches(text, keyword) for keyword in keywords):
+            return service_name, True
+
+    return "Amazon Bedrock", False
+
+
 def select_primary_service(
     business_challenge: str,
     input_data_type: str,
 ) -> str:
-    text = f"{business_challenge} {input_data_type}".lower()
-
-    for service_name, keywords in SERVICE_SELECTION_RULES:
-        if any(keyword in text for keyword in keywords):
-            return service_name
-
-    return "Amazon Bedrock"
+    service_name, _ = select_primary_service_with_match(
+        business_challenge,
+        input_data_type,
+    )
+    return service_name
 
 
 def estimate_complexity(
@@ -252,11 +307,13 @@ def estimate_cost_level(
 def build_mock_recommendation(
     request: AssessmentRequest,
 ) -> AssessmentResponse:
-    primary_service = select_primary_service(
+    primary_service, matched_rule = select_primary_service_with_match(
         business_challenge=request.business_challenge,
         input_data_type=request.input_data_type,
     )
-    service_metadata = SERVICE_METADATA[primary_service]
+    service_metadata = (
+        SERVICE_METADATA[primary_service] if matched_rule else FALLBACK_METADATA
+    )
     complexity = estimate_complexity(
         processing_type=request.processing_type,
         data_sensitivity=request.data_sensitivity,

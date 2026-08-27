@@ -113,3 +113,50 @@ def test_recommendation_is_coherent_with_selected_service(
         alternative_term.lower() in alternative.lower()
         for alternative in recommendation.alternatives_considered
     )
+
+
+def test_unmatched_request_uses_uncertain_bedrock_fallback_guidance():
+    recommendation = build_mock_recommendation(
+        build_request(
+            "Reduce delays in our internal approval process.",
+            "Operational records",
+        )
+    )
+    service = recommendation.recommended_services[0]
+    ai_component = next(
+        component
+        for component in recommendation.architecture
+        if component.aws_service == "Amazon Bedrock"
+    )
+    integration_phase = recommendation.implementation_phases[1]
+
+    assert service.service_name == "Amazon Bedrock"
+    assert "no specialised service rule matched" in service.reason_selected.lower()
+    assert "exploratory" in service.reason_selected.lower()
+    assert "assistant" not in service.reason_selected.lower()
+    assert "human validation" in service.implementation_role.lower()
+    assert "explor" in ai_component.responsibility.lower()
+    assert "requirements" in integration_phase.title.lower()
+    assert any(
+        "more detailed requirements" in limitation.lower()
+        for limitation in recommendation.limitations
+    )
+    assert any(
+        "non-ai" in alternative.lower() or "conventional automation" in alternative.lower()
+        for alternative in recommendation.alternatives_considered
+    )
+
+
+def test_explicit_bedrock_request_keeps_normal_service_guidance():
+    recommendation = build_mock_recommendation(
+        build_request(
+            "Build a generative AI assistant for employees.",
+            "Internal business documents",
+        )
+    )
+    service = recommendation.recommended_services[0]
+
+    assert service.service_name == "Amazon Bedrock"
+    assert "generative ai" in service.reason_selected.lower()
+    assert "assistant" in service.reason_selected.lower()
+    assert "no specialised service rule matched" not in service.reason_selected.lower()
