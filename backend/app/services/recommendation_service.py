@@ -31,6 +31,20 @@ SERVICE_METADATA = {
         "implementation_role": (
             "Process text and return language insights to the application."
         ),
+        "architecture_component_name": "Natural Language Analysis",
+        "architecture_responsibility": (
+            "Analyse text for sentiment, entities, and key phrases."
+        ),
+        "integration_phase_title": "Amazon Comprehend Integration",
+        "integration_phase_description": (
+            "Connect Amazon Comprehend and validate text-analysis results."
+        ),
+        "limitations": [
+            "Language support and domain-specific wording can affect analysis quality."
+        ],
+        "alternatives": [
+            "Consider deterministic text processing when AI analysis is unnecessary."
+        ],
     },
     "Amazon Textract": {
         "purpose": (
@@ -42,6 +56,21 @@ SERVICE_METADATA = {
         "implementation_role": (
             "Convert business documents into structured data for downstream use."
         ),
+        "architecture_component_name": "Document Extraction",
+        "architecture_responsibility": (
+            "Extract text, forms, fields and tables from business documents."
+        ),
+        "integration_phase_title": "Amazon Textract Integration",
+        "integration_phase_description": (
+            "Connect Amazon Textract and validate extraction against sample documents."
+        ),
+        "limitations": [
+            "Document quality and layout complexity can affect extraction accuracy."
+        ],
+        "alternatives": [
+            "Consider manual extraction or deterministic document templates for "
+            "small, predictable workloads."
+        ],
     },
     "Amazon Transcribe": {
         "purpose": "Convert speech in audio recordings into text.",
@@ -51,6 +80,20 @@ SERVICE_METADATA = {
         "implementation_role": (
             "Produce searchable transcripts for the application workflow."
         ),
+        "architecture_component_name": "Audio Transcription",
+        "architecture_responsibility": (
+            "Convert spoken audio into text for downstream processing."
+        ),
+        "integration_phase_title": "Amazon Transcribe Integration",
+        "integration_phase_description": (
+            "Connect Amazon Transcribe and validate transcripts using representative audio."
+        ),
+        "limitations": [
+            "Audio quality, background noise, and speaker accents can affect accuracy."
+        ],
+        "alternatives": [
+            "Consider manual transcription for low-volume or highly sensitive recordings."
+        ],
     },
     "Amazon Rekognition": {
         "purpose": "Analyse images and video for objects and other visual features.",
@@ -60,6 +103,21 @@ SERVICE_METADATA = {
         "implementation_role": (
             "Provide visual detection results to the application workflow."
         ),
+        "architecture_component_name": "Visual Analysis",
+        "architecture_responsibility": (
+            "Analyse images and video for objects and other visual features."
+        ),
+        "integration_phase_title": "Amazon Rekognition Integration",
+        "integration_phase_description": (
+            "Connect Amazon Rekognition and validate detections using representative media."
+        ),
+        "limitations": [
+            "Image quality, viewing angle, and visual context can affect detection results."
+        ],
+        "alternatives": [
+            "Consider human visual review when context or accuracy requirements exceed "
+            "automated detection capabilities."
+        ],
     },
     "Amazon Polly": {
         "purpose": "Convert written text into natural-sounding speech.",
@@ -69,6 +127,20 @@ SERVICE_METADATA = {
         "implementation_role": (
             "Generate spoken audio from application-provided text."
         ),
+        "architecture_component_name": "Speech Synthesis",
+        "architecture_responsibility": (
+            "Convert application text into natural-sounding speech."
+        ),
+        "integration_phase_title": "Amazon Polly Integration",
+        "integration_phase_description": (
+            "Connect Amazon Polly and validate voice output with representative text."
+        ),
+        "limitations": [
+            "Pronunciation, voice choice, and language availability can affect output."
+        ],
+        "alternatives": [
+            "Consider recorded human narration when a highly specific voice is required."
+        ],
     },
     "Amazon SageMaker": {
         "purpose": "Build, train, deploy, and manage custom machine learning models.",
@@ -78,6 +150,20 @@ SERVICE_METADATA = {
         "implementation_role": (
             "Manage the model lifecycle from experimentation through inference."
         ),
+        "architecture_component_name": "Custom ML Workflow",
+        "architecture_responsibility": (
+            "Support model training, deployment, and inference for the custom use case."
+        ),
+        "integration_phase_title": "Amazon SageMaker Model Workflow",
+        "integration_phase_description": (
+            "Prepare training data, train and evaluate the model, then validate deployment."
+        ),
+        "limitations": [
+            "Custom ML requires suitable training data and ongoing model lifecycle management."
+        ],
+        "alternatives": [
+            "Consider a managed prebuilt AI service before building a custom model."
+        ],
     },
     "Amazon Bedrock": {
         "purpose": (
@@ -89,6 +175,20 @@ SERVICE_METADATA = {
         "implementation_role": (
             "Return generated responses that the application validates before presenting."
         ),
+        "architecture_component_name": "Generative AI",
+        "architecture_responsibility": (
+            "Use foundation models to generate responses for the application."
+        ),
+        "integration_phase_title": "Amazon Bedrock Integration",
+        "integration_phase_description": (
+            "Connect a suitable foundation model and validate structured responses."
+        ),
+        "limitations": [
+            "Generative AI can hallucinate or produce inaccurate and biased output."
+        ],
+        "alternatives": [
+            "Consider a specialised AWS AI service when generative AI is unnecessary."
+        ],
     },
 }
 
@@ -177,7 +277,9 @@ def build_mock_recommendation(
         recommended_services=[
             {
                 "service_name": primary_service,
-                **service_metadata,
+                "purpose": service_metadata["purpose"],
+                "reason_selected": service_metadata["reason_selected"],
+                "implementation_role": service_metadata["implementation_role"],
             }
         ],
         architecture=[
@@ -197,12 +299,9 @@ def build_mock_recommendation(
                 ),
             },
             {
-                "component_name": "AI Recommendation",
+                "component_name": service_metadata["architecture_component_name"],
                 "aws_service": primary_service,
-                "responsibility": (
-                    "Provide the primary AI capability selected for the "
-                    "business use case."
-                ),
+                "responsibility": service_metadata["architecture_responsibility"],
             },
         ],
         implementation_phases=[
@@ -216,11 +315,8 @@ def build_mock_recommendation(
             },
             {
                 "phase_number": 2,
-                "title": "AWS AI Integration",
-                "description": (
-                    "Connect the selected AWS AI service and validate "
-                    "structured application responses."
-                ),
+                "title": service_metadata["integration_phase_title"],
+                "description": service_metadata["integration_phase_description"],
             },
         ],
         responsible_ai={
@@ -280,10 +376,10 @@ def build_mock_recommendation(
             "The proposed architecture must be validated against current AWS "
             "service capabilities.",
             "Cost estimates are indicative and depend on actual usage patterns.",
+            *service_metadata["limitations"],
         ],
         alternatives_considered=[
-            "Use another specialised AWS AI service when it better matches "
-            "the business requirement.",
+            *service_metadata["alternatives"],
             "Use a simpler non-AI workflow when AI does not provide sufficient "
             "business value.",
         ],
