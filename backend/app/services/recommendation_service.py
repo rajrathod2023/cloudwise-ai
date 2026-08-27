@@ -1,4 +1,9 @@
+from typing import Literal
+
 from app.schemas.assessment import AssessmentRequest, AssessmentResponse
+
+
+PlanningLevel = Literal["low", "medium", "high"]
 
 
 SERVICE_SELECTION_RULES = (
@@ -101,6 +106,49 @@ def select_primary_service(
     return "Amazon Bedrock"
 
 
+def estimate_complexity(
+    processing_type: str,
+    data_sensitivity: str,
+    expected_usage: str,
+    selected_service: str,
+) -> PlanningLevel:
+    score = 0
+
+    if processing_type == "real-time":
+        score += 1
+
+    score += {"low": 0, "medium": 1, "high": 2}[data_sensitivity]
+    score += {"low": 0, "medium": 1, "high": 2}[expected_usage]
+
+    if selected_service == "Amazon SageMaker":
+        score += 2
+
+    if score <= 1:
+        return "low"
+    if score <= 3:
+        return "medium"
+    return "high"
+
+
+def estimate_cost_level(
+    expected_usage: str,
+    processing_type: str,
+    selected_service: str,
+) -> PlanningLevel:
+    score = {"low": 0, "medium": 1, "high": 3}[expected_usage]
+
+    if processing_type == "real-time":
+        score += 1
+    if selected_service == "Amazon SageMaker":
+        score += 1
+
+    if score == 0:
+        return "low"
+    if score <= 2:
+        return "medium"
+    return "high"
+
+
 def build_mock_recommendation(
     request: AssessmentRequest,
 ) -> AssessmentResponse:
@@ -109,6 +157,17 @@ def build_mock_recommendation(
         input_data_type=request.input_data_type,
     )
     service_metadata = SERVICE_METADATA[primary_service]
+    complexity = estimate_complexity(
+        processing_type=request.processing_type,
+        data_sensitivity=request.data_sensitivity,
+        expected_usage=request.expected_usage,
+        selected_service=primary_service,
+    )
+    cost_level = estimate_cost_level(
+        expected_usage=request.expected_usage,
+        processing_type=request.processing_type,
+        selected_service=primary_service,
+    )
 
     return AssessmentResponse(
         assessment_id="demo-assessment-001",
@@ -228,8 +287,8 @@ def build_mock_recommendation(
             "Use a simpler non-AI workflow when AI does not provide sufficient "
             "business value.",
         ],
-        complexity="medium",
-        cost_level="low",
+        complexity=complexity,
+        cost_level=cost_level,
         disclaimer=(
             "This is a development recommendation and must be reviewed "
             "before implementation."
