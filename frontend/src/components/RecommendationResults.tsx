@@ -2,6 +2,7 @@ import type { AssessmentResponse } from '../types/assessment'
 
 type RecommendationResultsProps = {
   recommendation: AssessmentResponse | null
+  onNewAssessment: () => void
 }
 
 type GuidanceListProps = {
@@ -24,6 +25,7 @@ function GuidanceList({ title, items }: GuidanceListProps) {
 
 export function RecommendationResults({
   recommendation,
+  onNewAssessment,
 }: RecommendationResultsProps) {
   if (!recommendation) {
     return (
@@ -37,7 +39,9 @@ export function RecommendationResults({
           </span>
           <div>
             <p className="eyebrow">Output</p>
-            <h2 id="recommendation-results-title">Recommendation results</h2>
+            <h2 id="recommendation-results-title" tabIndex={-1}>
+              Recommendation results
+            </h2>
           </div>
         </div>
         <div className="results-empty-state">
@@ -59,15 +63,26 @@ export function RecommendationResults({
       aria-labelledby="recommendation-results-title"
     >
       <div className="panel-heading results-heading">
-        <span className="step-number" aria-hidden="true">
-          02
-        </span>
-        <div>
-          <p className="eyebrow">Output</p>
-          <h2 id="recommendation-results-title">Recommendation results</h2>
-          <p>Assessment {recommendation.assessment_id}</p>
+        <div className="results-heading-main">
+          <span className="step-number" aria-hidden="true">
+            02
+          </span>
+          <div>
+            <p className="eyebrow">Output</p>
+            <h2 id="recommendation-results-title" tabIndex={-1}>
+              Recommendation results
+            </h2>
+            <p>Assessment {recommendation.assessment_id}</p>
+          </div>
         </div>
+        <button className="secondary-button" type="button" onClick={onNewAssessment}>
+          New assessment
+        </button>
       </div>
+
+      <p className="sr-only" role="status">
+        Recommendation generated successfully.
+      </p>
 
       <div className="recommendation-dashboard">
         <section className="recommendation-summary" aria-labelledby="summary-title">

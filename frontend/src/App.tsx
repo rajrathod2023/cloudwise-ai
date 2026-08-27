@@ -15,6 +15,33 @@ const advisoryAreas = [
 export default function App() {
   const [assessmentResponse, setAssessmentResponse] =
     useState<AssessmentResponse | null>(null)
+  const [formVersion, setFormVersion] = useState(0)
+
+  function scrollToElement(elementId: string) {
+    window.requestAnimationFrame(() => {
+      const element = document.getElementById(elementId)
+      if (!element) return
+
+      element.focus({ preventScroll: true })
+      element.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          ? 'auto'
+          : 'smooth',
+        block: 'start',
+      })
+    })
+  }
+
+  function handleAssessmentCreated(response: AssessmentResponse) {
+    setAssessmentResponse(response)
+    scrollToElement('recommendation-results-title')
+  }
+
+  function handleNewAssessment() {
+    setAssessmentResponse(null)
+    setFormVersion((current) => current + 1)
+    scrollToElement('industry')
+  }
 
   return (
     <div id="top" className="app-shell">
@@ -80,9 +107,15 @@ export default function App() {
                   Describe the business need, data, users, constraints, and expected
                   scale.
                 </p>
-                <AssessmentForm onAssessmentCreated={setAssessmentResponse} />
+                <AssessmentForm
+                  key={formVersion}
+                  onAssessmentCreated={handleAssessmentCreated}
+                />
               </section>
-              <RecommendationResults recommendation={assessmentResponse} />
+              <RecommendationResults
+                recommendation={assessmentResponse}
+                onNewAssessment={handleNewAssessment}
+              />
             </div>
           </div>
         </section>

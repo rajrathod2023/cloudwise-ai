@@ -419,7 +419,9 @@ h1 {
 .form-field input:focus-visible,
 .form-field textarea:focus-visible,
 .form-field select:focus-visible,
-.primary-button:focus-visible {
+.primary-button:focus-visible,
+.secondary-button:focus-visible,
+#recommendation-results-title:focus-visible {
   outline: 3px solid rgba(23, 105, 224, 0.22);
   outline-offset: 2px;
   border-color: var(--blue);
@@ -460,6 +462,24 @@ h1 {
     border-color 120ms ease;
 }
 
+.button-spinner {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  margin-right: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  vertical-align: -2px;
+  animation: loading-spin 700ms linear infinite;
+}
+
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .primary-button:hover {
   border-color: var(--blue-dark);
   background: var(--blue-dark);
@@ -476,6 +496,14 @@ h1 {
   color: #718198;
   font-size: 0.76rem;
   line-height: 1.45;
+}
+
+.submission-status {
+  min-height: 20px;
+  margin-top: 8px;
+  color: var(--blue-dark);
+  font-size: 0.76rem;
+  font-weight: 650;
 }
 
 .request-error {
@@ -501,13 +529,56 @@ h1 {
 }
 
 .results-heading {
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
   border-bottom: 1px solid var(--line);
 }
 
-.results-heading > div > p:last-child {
+.results-heading-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+}
+
+.results-heading-main > div > p:last-child {
   margin: 7px 0 0;
   color: #718198;
   font-size: 0.76rem;
+}
+
+.secondary-button {
+  min-height: 42px;
+  flex: 0 0 auto;
+  padding: 9px 15px;
+  border: 1px solid #aebccc;
+  border-radius: 9px;
+  color: #31445e;
+  background: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 750;
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    background 120ms ease;
+}
+
+.secondary-button:hover {
+  border-color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .results-empty-state {
@@ -1022,6 +1093,15 @@ footer {
     width: 100%;
   }
 
+  .results-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .secondary-button {
+    width: 100%;
+  }
+
   .recommendation-panel > .panel-heading,
   .recommendation-dashboard {
     padding: 22px;
@@ -1062,5 +1142,15 @@ footer {
     justify-content: center;
     gap: 5px;
     padding: 18px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .button-spinner {
+    animation-duration: 1.5s;
   }
 }

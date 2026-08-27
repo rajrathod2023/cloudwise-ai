@@ -351,11 +351,16 @@ export function AssessmentForm({ onAssessmentCreated }: AssessmentFormProps) {
 
       <div className="form-actions">
         <button className="primary-button" type="submit" disabled={isSubmitting}>
+          {isSubmitting && <span className="button-spinner" aria-hidden="true" />}
           {isSubmitting ? 'Generating recommendation…' : 'Generate recommendation'}
         </button>
         <p className="submission-explainer">
           Your assessment is sent only to the local CloudWise API.
         </p>
+      </div>
+
+      <div className="submission-status" aria-live="polite">
+        {isSubmitting && 'CloudWise is processing your assessment.'}
       </div>
 
       {requestError && (
