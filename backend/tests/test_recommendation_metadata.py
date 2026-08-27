@@ -44,7 +44,7 @@ def build_request(
             "Scanned invoices",
             "Amazon Textract",
             "documents",
-            "fields and tables",
+            "form fields",
             "structured data",
         ),
         (
@@ -76,7 +76,7 @@ def build_request(
             "Training dataset",
             "Amazon SageMaker",
             "custom machine learning models",
-            "train and deploy",
+            "built and trained",
             "model lifecycle",
         ),
         (

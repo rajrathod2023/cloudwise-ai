@@ -82,3 +82,43 @@ def test_selects_textract_for_tables_with_normal_punctuation():
     )
 
     assert service == "Amazon Textract"
+
+
+def test_selects_rekognition_for_product_photographs():
+    service = select_primary_service(
+        business_challenge="Analyse product photographs for defects.",
+        input_data_type="Product photographs",
+    )
+
+    assert service == "Amazon Rekognition"
+
+
+def test_selects_transcribe_for_recorded_customer_calls():
+    service = select_primary_service(
+        business_challenge=(
+            "Turn recorded customer calls into searchable notes."
+        ),
+        input_data_type="Recorded calls",
+    )
+
+    assert service == "Amazon Transcribe"
+
+
+def test_selects_textract_for_pdf_form_values():
+    service = select_primary_service(
+        business_challenge="Read PDF forms and capture their values.",
+        input_data_type="PDF forms",
+    )
+
+    assert service == "Amazon Textract"
+
+
+def test_selects_sagemaker_for_specialised_machine_learning_model():
+    service = select_primary_service(
+        business_challenge=(
+            "Train our own specialised machine learning model."
+        ),
+        input_data_type="Training dataset",
+    )
+
+    assert service == "Amazon SageMaker"

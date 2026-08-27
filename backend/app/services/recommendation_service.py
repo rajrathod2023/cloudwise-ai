@@ -9,13 +9,25 @@ PlanningLevel = Literal["low", "medium", "high"]
 
 SERVICE_SELECTION_RULES = (
     ("Amazon Comprehend", ("sentiment", "customer review")),
-    ("Amazon Textract", ("invoice", "extract fields", "tables")),
-    ("Amazon Transcribe", ("transcribe", "transcription", "speech-to-text")),
-    ("Amazon Rekognition", ("identify objects", "object analysis", "image analysis")),
+    ("Amazon Textract", ("invoice", "extract fields", "tables", "pdf forms")),
+    (
+        "Amazon Transcribe",
+        ("transcribe", "transcription", "speech-to-text", "recorded calls"),
+    ),
+    (
+        "Amazon Rekognition",
+        ("identify objects", "object analysis", "image analysis", "photographs"),
+    ),
     ("Amazon Polly", ("text-to-speech", "voice generation", "voice audio")),
     (
         "Amazon SageMaker",
-        ("custom machine learning", "custom ml", "model training", "train and deploy"),
+        (
+            "custom machine learning",
+            "custom ml",
+            "model training",
+            "train and deploy",
+            "specialised machine learning model",
+        ),
     ),
     ("Amazon Bedrock", ("generative ai", "assistant")),
 )
@@ -52,7 +64,8 @@ SERVICE_METADATA = {
             "Extract text, forms, fields, and tables from scanned documents."
         ),
         "reason_selected": (
-            "The input contains invoices whose fields and tables need extraction."
+            "The use case requires text, form fields, or tables to be extracted from "
+            "business documents."
         ),
         "implementation_role": (
             "Convert business documents into structured data for downstream use."
@@ -99,7 +112,8 @@ SERVICE_METADATA = {
     "Amazon Rekognition": {
         "purpose": "Analyse images and video for objects and other visual features.",
         "reason_selected": (
-            "The use case requires objects to be detected in image content."
+            "The use case requires visual features or objects to be analysed in "
+            "image content."
         ),
         "implementation_role": (
             "Provide visual detection results to the application workflow."
@@ -146,7 +160,8 @@ SERVICE_METADATA = {
     "Amazon SageMaker": {
         "purpose": "Build, train, deploy, and manage custom machine learning models.",
         "reason_selected": (
-            "The requirement is to train and deploy a custom model using business data."
+            "The use case requires a specialised machine learning model to be built "
+            "and trained using business data."
         ),
         "implementation_role": (
             "Manage the model lifecycle from experimentation through inference."
