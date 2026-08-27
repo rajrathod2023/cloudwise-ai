@@ -216,14 +216,19 @@ These are possible next steps, not committed or deployed features.
 - **Local-first development:** V1 demonstrates the full application workflow without cloud cost, credentials, or deployment dependencies.
 - **Test-driven backend milestones:** Selection, metadata, estimates, coherence, API behavior, and CORS rules were developed with focused tests.
 
-## Screenshots
+## Application Preview
 
-Genuine application screenshots are not yet stored in the repository. Suggested future paths are:
+### Assessment workflow
 
-- `docs/screenshots/assessment-form.png`
-- `docs/screenshots/recommendation-results.png`
+The local React interface introduces the advisory workflow and collects the business and solution context used by the recommendation engine.
 
-No placeholder image files are included.
+<img src="docs/screenshots/assessment-form.png" alt="CloudWise AI local assessment workflow" width="900">
+
+### Recommendation results
+
+A genuine local assessment for customer feedback analysis recommends Amazon Comprehend and presents the service rationale, planning estimates, architecture, and implementation path.
+
+<img src="docs/screenshots/recommendation-results.png" alt="CloudWise AI Amazon Comprehend recommendation results" width="900">
 
 ## License
 
