@@ -1,6 +1,9 @@
+import { useState } from 'react'
+
 import { AppHeader } from './components/AppHeader'
 import { AssessmentForm } from './components/AssessmentForm'
 import { WorkspacePanel } from './components/WorkspacePanel'
+import type { AssessmentResponse } from './types/assessment'
 
 const advisoryAreas = [
   'AWS AI service fit',
@@ -10,6 +13,9 @@ const advisoryAreas = [
 ]
 
 export default function App() {
+  const [assessmentResponse, setAssessmentResponse] =
+    useState<AssessmentResponse | null>(null)
+
   return (
     <div id="top" className="app-shell">
       <AppHeader />
@@ -74,14 +80,52 @@ export default function App() {
                   Describe the business need, data, users, constraints, and expected
                   scale.
                 </p>
-                <AssessmentForm />
+                <AssessmentForm onAssessmentCreated={setAssessmentResponse} />
               </section>
-              <WorkspacePanel
-                step="02"
-                eyebrow="Output"
-                title="Recommendation results"
-                description="Review the proposed AWS AI service, architecture, controls, tradeoffs, and delivery plan."
-              />
+              {assessmentResponse ? (
+                <section
+                  className="workspace-panel result-confirmation-panel"
+                  aria-labelledby="recommendation-results-title"
+                >
+                  <div className="panel-heading">
+                    <span className="step-number" aria-hidden="true">
+                      02
+                    </span>
+                    <div>
+                      <p className="eyebrow">Output</p>
+                      <h2 id="recommendation-results-title">
+                        Recommendation results
+                      </h2>
+                    </div>
+                  </div>
+                  <p>
+                    The local CloudWise API returned a valid recommendation.
+                  </p>
+                  <div className="integration-success" role="status">
+                    <span className="success-mark" aria-hidden="true">
+                      ✓
+                    </span>
+                    <div>
+                      <strong>Recommendation generated successfully.</strong>
+                      <span>
+                        Primary service:{' '}
+                        {assessmentResponse.recommended_services[0]?.service_name}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="results-note">
+                    The complete recommendation dashboard will be added in a future
+                    milestone.
+                  </p>
+                </section>
+              ) : (
+                <WorkspacePanel
+                  step="02"
+                  eyebrow="Output"
+                  title="Recommendation results"
+                  description="Review the proposed AWS AI service, architecture, controls, tradeoffs, and delivery plan."
+                />
+              )}
             </div>
           </div>
         </section>

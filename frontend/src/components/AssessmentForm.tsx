@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 
-import type { AssessmentRequest } from '../types/assessment'
+import {
+  AssessmentApiError,
+  createAssessment,
+} from '../services/assessmentApi'
+import type { AssessmentRequest, AssessmentResponse } from '../types/assessment'
 
 type FormErrors = Partial<Record<keyof AssessmentRequest, string>>
 
@@ -75,10 +79,21 @@ function FieldError({ field, errors }: FieldErrorProps) {
   )
 }
 
-export function AssessmentForm() {
+type AssessmentFormProps = {
+  onAssessmentCreated: (response: AssessmentResponse) => void
+}
+
+const requestErrorMessages = {
+  validation: 'Some assessment information was not accepted. Please review the form.',
+  unavailable: 'CloudWise could not reach the local API. Make sure the backend is running.',
+  server: 'CloudWise could not generate the recommendation. Please try again.',
+} as const
+
+export function AssessmentForm({ onAssessmentCreated }: AssessmentFormProps) {
   const [values, setValues] = useState<AssessmentRequest>(initialAssessment)
   const [errors, setErrors] = useState<FormErrors>({})
-  const [isReady, setIsReady] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [requestError, setRequestError] = useState<string | null>(null)
 
   function handleChange(
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -88,18 +103,34 @@ export function AssessmentForm() {
 
     setValues((current) => ({ ...current, [field]: value }))
     setErrors((current) => ({ ...current, [field]: undefined }))
-    setIsReady(false)
+    setRequestError(null)
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const nextErrors = validateAssessment(values)
     setErrors(nextErrors)
-    setIsReady(Object.keys(nextErrors).length === 0)
+    setRequestError(null)
 
     if (Object.keys(nextErrors).length > 0) {
       const firstInvalidField = Object.keys(nextErrors)[0]
       document.getElementById(firstInvalidField)?.focus()
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const response = await createAssessment(values)
+      onAssessmentCreated(response)
+    } catch (error) {
+      const message =
+        error instanceof AssessmentApiError
+          ? requestErrorMessages[error.kind]
+          : requestErrorMessages.server
+      setRequestError(message)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -319,18 +350,18 @@ export function AssessmentForm() {
       </fieldset>
 
       <div className="form-actions">
-        <button className="primary-button" type="submit">
-          Generate recommendation
+        <button className="primary-button" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Generating recommendation…' : 'Generate recommendation'}
         </button>
         <p className="submission-explainer">
-          This step validates the assessment locally. No data is sent yet.
+          Your assessment is sent only to the local CloudWise API.
         </p>
       </div>
 
-      {isReady && (
-        <div className="readiness-message" role="status">
-          <strong>Assessment ready.</strong>
-          <span>API integration is the next step.</span>
+      {requestError && (
+        <div className="request-error" role="alert">
+          <strong>Recommendation not generated.</strong>
+          <span>{requestError}</span>
         </div>
       )}
     </form>

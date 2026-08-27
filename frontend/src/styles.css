@@ -465,6 +465,12 @@ h1 {
   background: var(--blue-dark);
 }
 
+.primary-button:disabled {
+  border-color: #8caee0;
+  background: #8caee0;
+  cursor: wait;
+}
+
 .submission-explainer {
   margin: 0;
   color: #718198;
@@ -472,17 +478,59 @@ h1 {
   line-height: 1.45;
 }
 
-.readiness-message {
+.request-error {
   display: flex;
   gap: 7px;
   margin-top: 20px;
   padding: 14px 16px;
-  border: 1px solid #a8dbc3;
+  border: 1px solid #e3b2ad;
   border-radius: 9px;
-  color: #176744;
-  background: #eefaf4;
+  color: #8c2119;
+  background: #fff4f2;
   font-size: 0.82rem;
   line-height: 1.45;
+}
+
+.integration-success {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 18px;
+  border: 1px solid #a8dbc3;
+  border-radius: 12px;
+  color: #176744;
+  background: #eefaf4;
+}
+
+.success-mark {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  color: #ffffff;
+  background: #1d9a63;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.integration-success strong,
+.integration-success span {
+  display: block;
+}
+
+.integration-success span {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.results-note {
+  min-height: auto !important;
+  margin-top: 18px !important;
+  font-size: 0.78rem;
 }
 
 .placeholder-state {
@@ -598,7 +646,7 @@ footer {
   }
 
   .form-actions,
-  .readiness-message {
+  .request-error {
     align-items: stretch;
     flex-direction: column;
   }
