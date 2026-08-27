@@ -1,0 +1,84 @@
+import { AppHeader } from './components/AppHeader'
+import { WorkspacePanel } from './components/WorkspacePanel'
+
+const advisoryAreas = [
+  'AWS AI service fit',
+  'Architecture guidance',
+  'Security and privacy',
+  'Responsible AI review',
+]
+
+export default function App() {
+  return (
+    <div id="top" className="app-shell">
+      <AppHeader />
+
+      <main>
+        <section className="hero-section">
+          <div className="container hero-grid">
+            <div className="hero-copy">
+              <p className="eyebrow">Plan with clarity</p>
+              <h1>Turn a business challenge into an AWS AI solution direction.</h1>
+              <p className="hero-intro">
+                CloudWise AI is an advisory workspace that helps teams explore a
+                structured, responsible starting point for AWS AI implementation.
+              </p>
+              <p className="advisory-note">
+                Recommendations are indicative and require qualified human review
+                before implementation.
+              </p>
+            </div>
+
+            <aside className="capability-card" aria-labelledby="coverage-title">
+              <p className="eyebrow">Recommendation coverage</p>
+              <h2 id="coverage-title">A practical view of the whole solution</h2>
+              <ul>
+                {advisoryAreas.map((area) => (
+                  <li key={area}>
+                    <span aria-hidden="true">✓</span>
+                    {area}
+                  </li>
+                ))}
+              </ul>
+            </aside>
+          </div>
+        </section>
+
+        <section className="workspace-section" aria-labelledby="workspace-title">
+          <div className="container">
+            <div className="section-heading">
+              <p className="eyebrow">Advisor workflow</p>
+              <h2 id="workspace-title">From context to recommendation</h2>
+              <p>
+                The workspace will guide you through describing the problem and
+                reviewing a structured solution proposal.
+              </p>
+            </div>
+
+            <div className="workspace-grid">
+              <WorkspacePanel
+                step="01"
+                eyebrow="Input"
+                title="Assessment"
+                description="Describe the business need, data, users, constraints, and expected scale."
+              />
+              <WorkspacePanel
+                step="02"
+                eyebrow="Output"
+                title="Recommendation results"
+                description="Review the proposed AWS AI service, architecture, controls, tradeoffs, and delivery plan."
+              />
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <div className="container footer-content">
+          <span>CloudWise AI</span>
+          <span>Local advisory experience · No AWS resources connected</span>
+        </div>
+      </footer>
+    </div>
+  )
+}
