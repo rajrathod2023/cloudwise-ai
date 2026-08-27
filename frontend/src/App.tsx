@@ -1,4 +1,5 @@
 import { AppHeader } from './components/AppHeader'
+import { AssessmentForm } from './components/AssessmentForm'
 import { WorkspacePanel } from './components/WorkspacePanel'
 
 const advisoryAreas = [
@@ -56,12 +57,25 @@ export default function App() {
             </div>
 
             <div className="workspace-grid">
-              <WorkspacePanel
-                step="01"
-                eyebrow="Input"
-                title="Assessment"
-                description="Describe the business need, data, users, constraints, and expected scale."
-              />
+              <section
+                className="workspace-panel assessment-panel"
+                aria-labelledby="assessment-title"
+              >
+                <div className="panel-heading">
+                  <span className="step-number" aria-hidden="true">
+                    01
+                  </span>
+                  <div>
+                    <p className="eyebrow">Input</p>
+                    <h2 id="assessment-title">Assessment</h2>
+                  </div>
+                </div>
+                <p>
+                  Describe the business need, data, users, constraints, and expected
+                  scale.
+                </p>
+                <AssessmentForm />
+              </section>
               <WorkspacePanel
                 step="02"
                 eyebrow="Output"
