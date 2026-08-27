@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 
 import {
@@ -85,7 +85,8 @@ type AssessmentFormProps = {
 
 const requestErrorMessages = {
   validation: 'Some assessment information was not accepted. Please review the form.',
-  unavailable: 'CloudWise could not reach the local API. Make sure the backend is running.',
+  unavailable:
+    'CloudWise could not reach the local API. Check that the local CloudWise backend is running, then submit the assessment again.',
   server: 'CloudWise could not generate the recommendation. Please try again.',
 } as const
 
@@ -94,6 +95,7 @@ export function AssessmentForm({ onAssessmentCreated }: AssessmentFormProps) {
   const [errors, setErrors] = useState<FormErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [requestError, setRequestError] = useState<string | null>(null)
+  const requestErrorRef = useRef<HTMLDivElement>(null)
 
   function handleChange(
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -129,6 +131,7 @@ export function AssessmentForm({ onAssessmentCreated }: AssessmentFormProps) {
           ? requestErrorMessages[error.kind]
           : requestErrorMessages.server
       setRequestError(message)
+      window.requestAnimationFrame(() => requestErrorRef.current?.focus())
     } finally {
       setIsSubmitting(false)
     }
@@ -143,6 +146,19 @@ export function AssessmentForm({ onAssessmentCreated }: AssessmentFormProps) {
 
   return (
     <form className="assessment-form" noValidate onSubmit={handleSubmit}>
+      <aside className="assessment-transparency" aria-labelledby="answer-use-title">
+        <strong id="answer-use-title">How CloudWise uses your answers</strong>
+        <p>
+          Your business challenge and input data type determine service fit.
+          Processing, sensitivity, and expected usage shape planning estimates.
+          Other answers provide context for you and human reviewers.
+        </p>
+        <p>
+          Compliance information is contextual only; CloudWise V1 does not perform
+          a regulatory or compliance assessment.
+        </p>
+      </aside>
+
       <fieldset>
         <legend>Business context</legend>
         <p className="group-description">
@@ -250,11 +266,15 @@ export function AssessmentForm({ onAssessmentCreated }: AssessmentFormProps) {
         <div className="form-grid form-grid-selects">
           <div className="form-field">
             <label htmlFor="processing_type">Processing type</label>
+            <span className="field-hint" id="processing-type-hint">
+              Batch handles grouped work; real-time responds as requests arrive.
+            </span>
             <select
               id="processing_type"
               name="processing_type"
               value={values.processing_type}
               onChange={handleChange}
+              aria-describedby="processing-type-hint"
             >
               <option value="either">Either</option>
               <option value="batch">Batch</option>
@@ -264,11 +284,15 @@ export function AssessmentForm({ onAssessmentCreated }: AssessmentFormProps) {
 
           <div className="form-field">
             <label htmlFor="data_sensitivity">Data sensitivity</label>
+            <span className="field-hint" id="data-sensitivity-hint">
+              Your assessment of the input data; used in the complexity estimate.
+            </span>
             <select
               id="data_sensitivity"
               name="data_sensitivity"
               value={values.data_sensitivity}
               onChange={handleChange}
+              aria-describedby="data-sensitivity-hint"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -278,11 +302,15 @@ export function AssessmentForm({ onAssessmentCreated }: AssessmentFormProps) {
 
           <div className="form-field">
             <label htmlFor="expected_usage">Expected usage</label>
+            <span className="field-hint" id="expected-usage-hint">
+              Your expected workload level; used in complexity and cost estimates.
+            </span>
             <select
               id="expected_usage"
               name="expected_usage"
               value={values.expected_usage}
               onChange={handleChange}
+              aria-describedby="expected-usage-hint"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -292,11 +320,15 @@ export function AssessmentForm({ onAssessmentCreated }: AssessmentFormProps) {
 
           <div className="form-field">
             <label htmlFor="budget_level">Budget constraint</label>
+            <span className="field-hint" id="budget-level-hint">
+              Your stated constraint; it does not set the relative cost estimate.
+            </span>
             <select
               id="budget_level"
               name="budget_level"
               value={values.budget_level}
               onChange={handleChange}
+              aria-describedby="budget-level-hint"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -309,7 +341,8 @@ export function AssessmentForm({ onAssessmentCreated }: AssessmentFormProps) {
       <fieldset>
         <legend>Governance context</legend>
         <p className="group-description">
-          Add optional requirements that may influence security and review guidance.
+          Record optional requirements for human review. V1 does not assess or
+          apply them automatically.
         </p>
 
         <div className="form-grid">
@@ -364,7 +397,12 @@ export function AssessmentForm({ onAssessmentCreated }: AssessmentFormProps) {
       </div>
 
       {requestError && (
-        <div className="request-error" role="alert">
+        <div
+          className="request-error"
+          ref={requestErrorRef}
+          role="alert"
+          tabIndex={-1}
+        >
           <strong>Recommendation not generated.</strong>
           <span>{requestError}</span>
         </div>

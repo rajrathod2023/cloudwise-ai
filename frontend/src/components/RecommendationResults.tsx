@@ -72,7 +72,6 @@ export function RecommendationResults({
             <h2 id="recommendation-results-title" tabIndex={-1}>
               Recommendation results
             </h2>
-            <p>Assessment {recommendation.assessment_id}</p>
           </div>
         </div>
         <button className="secondary-button" type="button" onClick={onNewAssessment}>
@@ -95,22 +94,24 @@ export function RecommendationResults({
           </div>
           <dl className="summary-facts">
             <div>
-              <dt>Use-case category</dt>
-              <dd>{recommendation.use_case_category}</dd>
-            </div>
-            <div>
-              <dt>Complexity</dt>
+              <dt>Complexity estimate</dt>
               <dd>
                 <span className={`planning-badge level-${recommendation.complexity}`}>
                   {recommendation.complexity}
                 </span>
+                <span className="fact-detail">
+                  Based on workload characteristics and the recommended service.
+                </span>
               </dd>
             </div>
             <div>
-              <dt>Relative cost</dt>
+              <dt>Relative cost estimate</dt>
               <dd>
                 <span className={`planning-badge level-${recommendation.cost_level}`}>
                   {recommendation.cost_level}
+                </span>
+                <span className="fact-detail">
+                  A planning level, not an AWS bill or pricing quote.
                 </span>
               </dd>
             </div>
@@ -147,8 +148,12 @@ export function RecommendationResults({
 
         <section className="result-section" aria-labelledby="architecture-title">
           <div className="result-section-heading">
-            <p className="section-kicker">Solution flow</p>
-            <h3 id="architecture-title">Architecture</h3>
+            <p className="section-kicker">Advisory solution flow</p>
+            <h3 id="architecture-title">Proposed target architecture</h3>
+            <p className="result-section-description">
+              These AWS services are recommendation targets. CloudWise V1 has not
+              deployed or connected them.
+            </p>
           </div>
           <ol className="architecture-flow">
             {recommendation.architecture.map((component, index) => (
@@ -169,7 +174,10 @@ export function RecommendationResults({
         <section className="result-section" aria-labelledby="phases-title">
           <div className="result-section-heading">
             <p className="section-kicker">Delivery path</p>
-            <h3 id="phases-title">Implementation phases</h3>
+            <h3 id="phases-title">Proposed implementation plan</h3>
+            <p className="result-section-description">
+              Suggested future steps if the recommendation is approved for delivery.
+            </p>
           </div>
           <ol className="phase-timeline">
             {recommendation.implementation_phases.map((phase) => (
@@ -211,7 +219,11 @@ export function RecommendationResults({
           <section className="result-section" aria-labelledby="security-title">
             <div className="result-section-heading">
               <p className="section-kicker">Technical controls</p>
-              <h3 id="security-title">Security</h3>
+              <h3 id="security-title">Recommended future security controls</h3>
+              <p className="result-section-description">
+                Controls to evaluate and provision during implementation; CloudWise
+                V1 has not configured them.
+              </p>
             </div>
             <div className="guidance-stack">
               <GuidanceList
