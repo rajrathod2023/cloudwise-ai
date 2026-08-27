@@ -1,20 +1,29 @@
 from app.schemas.assessment import AssessmentRequest, AssessmentResponse
 
 
+SERVICE_SELECTION_RULES = (
+    ("Amazon Comprehend", ("sentiment", "customer review")),
+    ("Amazon Textract", ("invoice", "extract fields", "tables")),
+    ("Amazon Transcribe", ("transcribe", "transcription", "speech-to-text")),
+    ("Amazon Rekognition", ("identify objects", "object analysis", "image analysis")),
+    ("Amazon Polly", ("text-to-speech", "voice generation", "voice audio")),
+    (
+        "Amazon SageMaker",
+        ("custom machine learning", "custom ml", "model training", "train and deploy"),
+    ),
+    ("Amazon Bedrock", ("generative ai", "assistant")),
+)
+
+
 def select_primary_service(
     business_challenge: str,
     input_data_type: str,
 ) -> str:
     text = f"{business_challenge} {input_data_type}".lower()
 
-    if "sentiment" in text or "customer review" in text:
-        return "Amazon Comprehend"
-
-    if "invoice" in text or "extract fields" in text or "tables" in text:
-        return "Amazon Textract"
-
-    if "generative ai" in text or "assistant" in text:
-        return "Amazon Bedrock"
+    for service_name, keywords in SERVICE_SELECTION_RULES:
+        if any(keyword in text for keyword in keywords):
+            return service_name
 
     return "Amazon Bedrock"
 
