@@ -14,6 +14,79 @@ SERVICE_SELECTION_RULES = (
     ("Amazon Bedrock", ("generative ai", "assistant")),
 )
 
+SERVICE_METADATA = {
+    "Amazon Comprehend": {
+        "purpose": (
+            "Analyse text for sentiment, entities, key phrases, and other "
+            "natural-language insights."
+        ),
+        "reason_selected": (
+            "The business problem requires sentiment analysis of customer text."
+        ),
+        "implementation_role": (
+            "Process text and return language insights to the application."
+        ),
+    },
+    "Amazon Textract": {
+        "purpose": (
+            "Extract text, forms, fields, and tables from scanned documents."
+        ),
+        "reason_selected": (
+            "The input contains invoices whose fields and tables need extraction."
+        ),
+        "implementation_role": (
+            "Convert business documents into structured data for downstream use."
+        ),
+    },
+    "Amazon Transcribe": {
+        "purpose": "Convert speech in audio recordings into text.",
+        "reason_selected": (
+            "The use case needs spoken content from audio converted into text."
+        ),
+        "implementation_role": (
+            "Produce searchable transcripts for the application workflow."
+        ),
+    },
+    "Amazon Rekognition": {
+        "purpose": "Analyse images and video for objects and other visual features.",
+        "reason_selected": (
+            "The use case requires objects to be detected in image content."
+        ),
+        "implementation_role": (
+            "Provide visual detection results to the application workflow."
+        ),
+    },
+    "Amazon Polly": {
+        "purpose": "Convert written text into natural-sounding speech.",
+        "reason_selected": (
+            "The requested output is text-to-speech narration for users."
+        ),
+        "implementation_role": (
+            "Generate spoken audio from application-provided text."
+        ),
+    },
+    "Amazon SageMaker": {
+        "purpose": "Build, train, deploy, and manage custom machine learning models.",
+        "reason_selected": (
+            "The requirement is to train and deploy a custom model using business data."
+        ),
+        "implementation_role": (
+            "Manage the model lifecycle from experimentation through inference."
+        ),
+    },
+    "Amazon Bedrock": {
+        "purpose": (
+            "Provide managed access to foundation models for generative AI solutions."
+        ),
+        "reason_selected": (
+            "The use case requires generative AI capabilities for an assistant."
+        ),
+        "implementation_role": (
+            "Return generated responses that the application validates before presenting."
+        ),
+    },
+}
+
 
 def select_primary_service(
     business_challenge: str,
@@ -35,6 +108,7 @@ def build_mock_recommendation(
         business_challenge=request.business_challenge,
         input_data_type=request.input_data_type,
     )
+    service_metadata = SERVICE_METADATA[primary_service]
 
     return AssessmentResponse(
         assessment_id="demo-assessment-001",
@@ -44,11 +118,7 @@ def build_mock_recommendation(
         recommended_services=[
             {
                 "service_name": primary_service,
-                "purpose": "Provide the primary AI capability for the use case.",
-                "reason_selected": (
-                    "Selected based on the business challenge and input data type."
-                ),
-                "implementation_role": "Primary AI service",
+                **service_metadata,
             }
         ],
         architecture=[
