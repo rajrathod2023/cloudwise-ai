@@ -1,7 +1,7 @@
 import pytest
 
 from app.schemas.assessment import AssessmentRequest
-from app.services.recommendation_service import build_mock_recommendation
+from app.services.recommendation_service import build_recommendation
 
 
 def build_request(
@@ -97,7 +97,7 @@ def test_recommendation_includes_service_specific_metadata(
     reason_term: str,
     role_term: str,
 ):
-    recommendation = build_mock_recommendation(
+    recommendation = build_recommendation(
         build_request(business_challenge, input_data_type)
     )
     service = recommendation.recommended_services[0]

@@ -319,7 +319,7 @@ def estimate_cost_level(
     return "high"
 
 
-def build_mock_recommendation(
+def build_recommendation(
     request: AssessmentRequest,
 ) -> AssessmentResponse:
     primary_service, matched_rule = select_primary_service_with_match(
@@ -342,10 +342,10 @@ def build_mock_recommendation(
     )
 
     return AssessmentResponse(
-        assessment_id="demo-assessment-001",
+        assessment_id="cloudwise-assessment-v1",
         status="completed",
         problem_summary=request.business_challenge,
-        use_case_category="mock-ai-assessment",
+        use_case_category="aws-ai-solution-assessment",
         recommended_services=[
             {
                 "service_name": primary_service,
@@ -381,7 +381,7 @@ def build_mock_recommendation(
                 "phase_number": 1,
                 "title": "Proof of Concept",
                 "description": (
-                    "Validate the business use case with mocked recommendations "
+                    "Validate the business use case with rule-based recommendations "
                     "before connecting real AWS AI services."
                 ),
             },

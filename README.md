@@ -101,8 +101,8 @@ Generated directories such as `.venv/`, `frontend/node_modules/`, and `frontend/
 
 ### Prerequisites
 
-- Python 3
-- Node.js and npm compatible with the versions in `frontend/package-lock.json`
+- Python 3.14.2 (the version used for local V1 verification)
+- Node.js `^20.19.0` or `>=22.12.0`, with npm
 - Git
 
 No AWS account or credentials are required.
@@ -127,7 +127,7 @@ In a second terminal, from the repository root:
 
 ```powershell
 cd frontend
-npm install
+npm ci
 Copy-Item .env.example .env
 npm run dev
 ```
@@ -155,7 +155,7 @@ The architecture section describes a possible AWS-oriented implementation. It do
 
 ## Testing and Verification
 
-The backend currently has **31 passing tests**, verified locally. Coverage includes:
+The backend currently has **39 passing tests**, verified locally. Coverage includes:
 
 - Request schema and API endpoint validation
 - Health endpoint and restrictive local CORS behavior

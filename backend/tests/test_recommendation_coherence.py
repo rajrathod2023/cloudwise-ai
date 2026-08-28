@@ -1,7 +1,7 @@
 import pytest
 
 from app.schemas.assessment import AssessmentRequest
-from app.services.recommendation_service import build_mock_recommendation
+from app.services.recommendation_service import build_recommendation
 
 
 def build_request(
@@ -91,7 +91,7 @@ def test_recommendation_is_coherent_with_selected_service(
     limitation_term: str,
     alternative_term: str,
 ):
-    recommendation = build_mock_recommendation(
+    recommendation = build_recommendation(
         build_request(business_challenge, input_data_type)
     )
     ai_component = next(
@@ -116,7 +116,7 @@ def test_recommendation_is_coherent_with_selected_service(
 
 
 def test_unmatched_request_uses_uncertain_bedrock_fallback_guidance():
-    recommendation = build_mock_recommendation(
+    recommendation = build_recommendation(
         build_request(
             "Reduce delays in our internal approval process.",
             "Operational records",
@@ -148,7 +148,7 @@ def test_unmatched_request_uses_uncertain_bedrock_fallback_guidance():
 
 
 def test_explicit_bedrock_request_keeps_normal_service_guidance():
-    recommendation = build_mock_recommendation(
+    recommendation = build_recommendation(
         build_request(
             "Build a generative AI assistant for employees.",
             "Internal business documents",

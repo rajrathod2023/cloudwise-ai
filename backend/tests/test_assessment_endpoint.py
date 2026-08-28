@@ -35,8 +35,13 @@ def test_create_assessment():
 
     assert data["status"] == "completed"
     assert data["problem_summary"] == payload["business_challenge"]
-    assert data["use_case_category"] == "mock-ai-assessment"
+    assert data["assessment_id"] == "cloudwise-assessment-v1"
+    assert data["use_case_category"] == "aws-ai-solution-assessment"
     assert data["recommended_services"][0]["service_name"] == "Amazon Comprehend"
+    response_text = response.text.lower()
+    assert "mock-ai-assessment" not in response_text
+    assert "mocked recommendations" not in response_text
+    assert "demo-assessment" not in response_text
 
 
 def test_create_assessment_rejects_invalid_processing_type():

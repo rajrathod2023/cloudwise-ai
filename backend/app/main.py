@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.schemas.assessment import AssessmentRequest, AssessmentResponse
-from app.services.recommendation_service import build_mock_recommendation
+from app.services.recommendation_service import build_recommendation
 
 
 app = FastAPI(
@@ -36,4 +36,4 @@ def health_check():
     response_model=AssessmentResponse,
 )
 def create_assessment(request: AssessmentRequest):
-    return build_mock_recommendation(request)
+    return build_recommendation(request)

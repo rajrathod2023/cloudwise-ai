@@ -1,5 +1,5 @@
 from app.schemas.assessment import AssessmentRequest
-from app.services.recommendation_service import build_mock_recommendation
+from app.services.recommendation_service import build_recommendation
 
 
 def build_request(
@@ -33,7 +33,7 @@ def test_estimates_low_complexity_and_cost_for_simple_batch_workload():
         expected_usage="low",
     )
 
-    recommendation = build_mock_recommendation(request)
+    recommendation = build_recommendation(request)
 
     assert recommendation.complexity == "low"
     assert recommendation.cost_level == "low"
@@ -48,7 +48,7 @@ def test_estimates_medium_complexity_and_cost_for_moderate_realtime_workload():
         expected_usage="medium",
     )
 
-    recommendation = build_mock_recommendation(request)
+    recommendation = build_recommendation(request)
 
     assert recommendation.complexity == "medium"
     assert recommendation.cost_level == "medium"
@@ -63,7 +63,7 @@ def test_estimates_high_complexity_and_cost_for_demanding_custom_ml_workload():
         expected_usage="high",
     )
 
-    recommendation = build_mock_recommendation(request)
+    recommendation = build_recommendation(request)
 
     assert recommendation.complexity == "high"
     assert recommendation.cost_level == "high"
@@ -78,10 +78,10 @@ def test_budget_constraint_does_not_determine_estimated_cost_level():
         "expected_usage": "medium",
     }
 
-    low_budget_recommendation = build_mock_recommendation(
+    low_budget_recommendation = build_recommendation(
         build_request(**request_values, budget_level="low")
     )
-    high_budget_recommendation = build_mock_recommendation(
+    high_budget_recommendation = build_recommendation(
         build_request(**request_values, budget_level="high")
     )
 
