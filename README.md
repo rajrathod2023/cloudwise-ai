@@ -2,7 +2,23 @@
 
 CloudWise AI is a full-stack AWS AI solution advisory application that turns business requirements into structured AWS AI service and architecture recommendations.
 
+**Tech:** React • TypeScript • FastAPI • Python • Pydantic • REST API • Pytest
+
 Version 1 runs entirely in a local development environment. It uses deterministic, rule-based recommendation logic and does **not** call, provision, or deploy any AWS service.
+
+## Application Preview
+
+### Assessment workflow
+
+The local React interface introduces the advisory workflow and collects the business and solution context used by the recommendation engine.
+
+<img src="docs/screenshots/assessment-form.png" alt="CloudWise AI local assessment workflow" width="900">
+
+### Recommendation results
+
+A genuine local assessment for customer feedback analysis recommends Amazon Comprehend and presents the service rationale, planning estimates, architecture, and implementation path.
+
+<img src="docs/screenshots/recommendation-results.png" alt="CloudWise AI Amazon Comprehend recommendation results" width="900">
 
 ## Why I Built This
 
@@ -215,20 +231,6 @@ These are possible next steps, not committed or deployed features.
 - **Separate deterministic estimators:** Complexity and relative cost are calculated independently from explicit workload signals.
 - **Local-first development:** V1 demonstrates the full application workflow without cloud cost, credentials, or deployment dependencies.
 - **Test-driven backend milestones:** Selection, metadata, estimates, coherence, API behavior, and CORS rules were developed with focused tests.
-
-## Application Preview
-
-### Assessment workflow
-
-The local React interface introduces the advisory workflow and collects the business and solution context used by the recommendation engine.
-
-<img src="docs/screenshots/assessment-form.png" alt="CloudWise AI local assessment workflow" width="900">
-
-### Recommendation results
-
-A genuine local assessment for customer feedback analysis recommends Amazon Comprehend and presents the service rationale, planning estimates, architecture, and implementation path.
-
-<img src="docs/screenshots/recommendation-results.png" alt="CloudWise AI Amazon Comprehend recommendation results" width="900">
 
 ## License
 
